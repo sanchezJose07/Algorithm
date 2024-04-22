@@ -183,7 +183,7 @@ A nuestra clase ChatScreen, le agregaremos un leading, el cual incluirá un circ
         leading: const Padding(
           padding: EdgeInsets.all(4.0),
           child: CircleAvatar(
-            backgroundImage: NetworkImage("https://i.pinimg.com/564x/a1/c0/3d/a1c03d2c9b83a95bb8e6689892786102.jpg"
+            backgroundImage: NetworkImage("https://scontent.fqro3-1.fna.fbcdn.net/v/t39.30808-6/284948868_570259974455087_7903694349108941066_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=5f2048&_nc_ohc=z822PzC31noAb5wdiyL&_nc_ht=scontent.fqro3-1.fna&oh=00_AfD8jHuZaV7NARJ030Tf_JEk-DBnLnoGMSYXmIQaeHeGXw&oe=662A2E80"
             ),
           ),
         ),
@@ -214,7 +214,7 @@ class _ChatBar extends StatelessWidget implements PreferredSizeWidget{
       leading: const Padding(
         padding: EdgeInsets.all(4.0),
         child: CircleAvatar(
-          backgroundImage: NetworkImage("https://i.pinimg.com/564x/a1/c0/3d/a1c03d2c9b83a95bb8e6689892786102.jpg"
+          backgroundImage: NetworkImage("https://scontent.fqro3-1.fna.fbcdn.net/v/t39.30808-6/284948868_570259974455087_7903694349108941066_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=5f2048&_nc_ohc=z822PzC31noAb5wdiyL&_nc_ht=scontent.fqro3-1.fna&oh=00_AfD8jHuZaV7NARJ030Tf_JEk-DBnLnoGMSYXmIQaeHeGXw&oe=662A2E80"
           ),
         ),
       ),
@@ -269,7 +269,290 @@ A esta columna, le agregaremos un padding para restringir el limite horizontal a
 
 RESULTADO: 
 
+<img src=img/img_06.png alt="yesNoMaybeApp" style="width:240px;height:427px;">
 
+
+
+MIS MENSAJES - BURBUJA DE CHAT
+
+Para empezar con esta seccion, agregaremos un widget para nuestras burbujas, para esto crearemos un nuevo repositorio para guardar esto widgets, esto en la siguiente direccion, lib/presentation/widgets, la idea de esto es que en este directorio guardemos los widgets muy especificos que podemos reutilizar. Creamos un nuevo directorio en nuestro directorio de widget, el cual tendra el nombre de chat. 
+
+Crear widget de MyMessageBubble
+
+1. En el directorio de chat mensionado anteriormente crearemos nuestro widget con el nombre de "my_message_bubble.dart".
+
+2.  Importamos la libreria de material.dart
+3. Creamos nuestro widget Stateless
+4. Definimos el nombre como MyMessageBubble
+5. Retornamos un texto, esto por el momento\
+
+A continuacion, se muestra el codigo de nuestro my_message_bubble.dart
+
+```dar
+import 'package:flutter/material.dart';
+
+class MyMessageBubble extends StatelessWidget {
+  const MyMessageBubble({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text( "My Message" );
+  }
+}
+```
+
+**NOTA: Para este punto se hizo el cambio de la carpeta chat, es decir la de la pantalla a un nuevo directorio, el cual tiene la siguiente direccion, lib/presentation/screens, con lo cual tendriamos el siguiente directorio actualizado para importar en nuestro programa main.dart, lib/presentation/screens/chat/chat_screen.dart**
+
+Ahora agregamos nuestro widget a nuestro chat_screen.dart, para ser mas especificos en nuestro widget _ChatView, En la parte donde retornamos un texto. 
+
+```dart
+...
+   Expanded(
+    child: ListView.builder(
+      itemCount: 100,
+      itemBuilder: ( context, index ){
+        return const MyMessageBubble(); //<---
+      }
+    ),
+  ),
+...
+```
+
+RESULTADO:
+
+<img src=img/img_07.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+Como siguiente paso, en nuestro codigo de nuestro archivo my_message_bubble.dart, cambiaremos el valor a retornar, que anteriormente era un texto, ahora sera una Column, con un Container dentro, y con la siguiente configuracion
+
+```dart
+...
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.pinkAccent,
+            ),
+            child: const Text("Viejo Sabroso", style: TextStyle( color: Colors.white),),
+          )
+        ],
+    );
+  }
+...
+```
+
+Donde agregamos una decoracion con color pinkAccent, y un child de texto.
+
+RESULTADO:
+
+<img src=img/img_08.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+A continuacion, definiremos un padding en nuestro texto, ademas de que a nuestra columna le agregaremos un SizeBox, esto para tener una mejor distribucion y separacion de cada uno de nuestros mensajes.
+
+```dart
+...
+return Column(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.pinkAccent,
+            ),
+            // AGREGAMOS EL PADDING AL TEXTO
+            child: const Padding(
+              padding: EdgeInsets.symmetric( horizontal: 20.0, vertical: 10 ),
+              child: Text("Viejo Sabroso", style: TextStyle( color: Colors.white),),
+            ),
+          ),
+          const SizedBox( height: 10,) //<--- Separacion
+        ],
+    );
+...
+```
+
+RESULTADO:
+
+<img src=img/img_09.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+Posteriormente definimos los mensajes a la parte derecha, esto lo logramos definiendo en la columna la siguiente  linea.
+
+```dart
+crossAxisAlignment: CrossAxisAlignment.end, //<---1
+```
+
+y redondeamos nuestros mensajes, configurando la decoracion, agregando el BorderRadius
+
+```dart
+borderRadius: BorderRadius.circular(20) //<---2
+```
+
+Ahora definiremos el color de nuestro mensajes dependiendo del contexto de nuestra aplicacion, esto con la siguiente lineal al iniciar nuestro widget
+
+```dart
+final colors = Theme.of(context).colorScheme; //<---3
+```
+
+y la definimos en el color de nuestra decoration de nuestro mensaje, esto definira el color de nuestro mensajes como el color por defecto de nuestra aplicacion, este valor se toma del archivo app_theme.dart
+
+```dart
+color:colors.primary,	//<---4
+```
+
+finalmente tenemos el siguiente codigo.
+
+```dart
+
+class MyMessageBubble extends StatelessWidget {
+  const MyMessageBubble({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    final colors = Theme.of(context).colorScheme; //<---3
+ 
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,//<---1
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: colors.primary,			//<---4
+              borderRadius: BorderRadius.circular( 20 ) //<---2
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric( horizontal: 20.0, vertical: 10 ),
+              child: Text("Viejo Sabroso", style: TextStyle( color: Colors.white),),
+            ),
+          ),
+          const SizedBox( height: 10,)
+        ],
+    );
+  }
+}
+```
+
+RESULTADO:
+
+<img src=img/img_10.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+
+
+MENSAJES DE EL - BURBUJA DE CHAT
+
+Ahora que ya tenemos los mensajes para la parte del usuario, crearemos la parte del la persona externa, para ello crearemos un nuevo archivo en nuestro directorio de chat con el nombre de his_message_bubble.dart, donde copiaremos el codigo del archivo my_message_bubble.dart, solo que cambiaremos el nombre de la clase. 
+
+1. Cambiaremos el texto que se muestra en el mensaje, por "Formula 1"
+2. Cambiaremos el CrossAxisAlignment a start
+3. Cambiaremos el tamano de SizeBox a 5
+4. Cambiaremos el color a secundary.
+
+```dart
+import 'package:flutter/material.dart';
+
+class HisMessageBubble extends StatelessWidget {
+  const HisMessageBubble({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    final colors = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,	//<---2
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              color: colors.secondary, //<---4
+              borderRadius: BorderRadius.circular( 20 )
+          ),
+          child: const Padding(
+            padding: EdgeInsets.symmetric( horizontal: 20.0, vertical: 10 ),
+            child: Text("Formula 1", style: TextStyle( color: Colors.white),), //<--1
+          ),
+        ),
+        const SizedBox( height: 5,)		//<---3
+      ],
+    );
+  }
+}
+```
+
+ya teniendo los cambios establecidos, los agregaremos a nuestro archivo chat_screen.dart para verlos reflejados en la aplicacion.
+
+Para ello, definiremos en el _ChatView, donde alternaremos cada uno de los mensajes del usuario con el tercero. Para este caso, utilizaremos el index que tenemos como iteracion para definir cuales son los valores pares e impares para definir cuando alternar de texto, donde tenemos el siguiente codigo.
+
+```dart
+class _ChatView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric( horizontal: 10 ),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 100,
+                  itemBuilder: ( context, index ){
+                    return ( index % 2 == 0 )	//<---PAR
+                      ? const HisMessageBubble() //<---TRUE
+                      : const MyMessageBubble(); //<---FALSE
+                  }
+                ),
+              ),
+              const Text("HOLA MUNDO")
+            ],
+          ),
+        )
+    );
+  }
+}
+```
+
+RESULTADO:
+
+<img src=img/img_11.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+Ahora nuestro objetivo es que la persona externa pueda tener imagenes, para ello creremos una clase en nuestro archivo his_messege_bubble.dart llamada _ImageBuble, donde podemos ver que es una clase privada, ya que este solo se utilizara en el codigo local. Esta clase es de tipo Stateless, la cual retornara un Placeholder. como tenemos a continuacion.
+
+```dart
+...
+		const SizedBox( height: 5,),
+        _ImageBubble(),		//<---
+      ],
+    );
+  }
+}
+
+//CLASE PARA LA IMAGEN
+class _ImageBubble extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+```
+
+RESULTADO:
+
+<img src=img/img_12.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+Por el momento borraremos el Placeholder() del codigo, en su caso agregamos el siguiente link el cual es un gif https://yesno.wtf/api, este url lo agregaremos al programa Postman, donde pegaremos el link y enviaremos, esto nos generara un link con extension gif y lo pegamos en nuestro widget.
+
+<img src=img/img_13.png alt="yesNoMaybeApp" style="width:855px;height:507px;">
+
+```dart
+class _ImageBubble extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network( 'https://yesno.wtf/assets/no/10-d5ddf3f82134e781c1175614c0d2bab2.gif' );	//<---
+  }
+}
+```
+
+RESULTADO:
+
+<img src=img/img_14.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
 
 ---
 
