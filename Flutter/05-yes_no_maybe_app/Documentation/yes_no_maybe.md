@@ -554,6 +554,169 @@ RESULTADO:
 
 <img src=img/img_14.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
 
+Ahora envolvemos nuestro widget de imagen en una ClipRRect
+
+```dart
+return  ClipRRect(  child:  Image.network( 'https://yesno.wtf/assets/no/10-d5ddf3f82134e781c1175614c0d2bab2.gif' ) );	//<---1
+```
+
+Continuando con hacerle un borderRadius a nuestra imagen, con un valor circular de 20.
+
+```dart
+borderRadius: BorderRadius.circular( 20 ), //<---2
+```
+
+A continuacion, agregamos un SizedBox entre nuestro widget de nuestra imagen, con lo cual tenemos dos SizedBox para nuestra funcion
+
+```dart
+const SizedBox( height: 5,),
+_ImageBubble(),
+const SizedBox( height: 10),	//<---3
+```
+
+Como siguiente punto reduciremos al 70% neustra imagen para que abarque toda nuestra pantalla, es por ello que agregaremos una MediaQuery, para saber cual es el tamano de nuestro dispositivo, y asi definir el limite de nuestra imagen. y despues imprimimos los valores obtenidos en consola.
+
+```dart
+final size = MediaQuery.of(context).size;	//<---4.1
+print( size );								//<---4.2
+```
+
+```cmd
+I/flutter (12453): Size(392.7, 783.3)		
+```
+
+Conociendo el tamano de nuestro dispositivo, restringimos el tamano de nuestra imagen al 70% en lo ancho y en la altura la definimos como 150, ademas de que agregamos un fit, que admite widgets de tipo BoxFit, en este caso lo definiremos como cover, ya que nuestra imagen pierde el redondeo impuesto anteriormente, esto por redimencioar nuestra imagen.
+
+```dart
+child:  Image.network(
+    'https://yesno.wtf/assets/no/10-d5ddf3f82134e781c1175614c0d2bab2.gif',
+    width: size.width * 0.70,	//<---5.1
+	height: 150,				//<---5.2
+    fit: BoxFit.cover,			//<---5.3
+) );
+```
+
+CODIGO:
+
+```DART
+...  
+		const SizedBox( height: 5,),
+        _ImageBubble(),
+        const SizedBox( height: 10),				//<---3
+      ],
+    );
+  }
+}
+
+class _ImageBubble extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;		//<---4.1
+    print( size );									//<---4.2
+    return ClipRRect(
+        borderRadius: BorderRadius.circular( 20 ),	//<---2
+        child:  Image.network(
+            'https://yesno.wtf/assets/no/10-d5ddf3f82134e781c1175614c0d2bab2.gif', //<---1
+            width: size.width * 0.70,				//<---5.1
+            height: 150,							//<---5.2
+            fit: BoxFit.cover,						//<---5.3
+        ) );
+  }
+} 
+```
+
+
+
+RESULTADO:
+
+<img src=img/img_15.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+  
+
+72. MOSTRAR MENSAJES MIENTRAS SE CARGA LA IMAGEN
+
+El objetivo de esta leccion, es mostrar algun mensaje mientras nuestra imagen esta cargandose, ya que al cargar esta pantalla tiene un pequeno retardo la imagen. Definiremos un loadingBuilder en la imagen el cual es algo que se va a crear en tiempo de ejecucion. En este widget definiremos si ya se ha cargado la imagen, si es asi, retonamos la imagen, es decir, el children, caso contrario retornaremos un contenedor con los tamanos ya definidos anteriormente, con un padding simetrico y con el texto que se mostrara.
+
+```dart
+child:  Image.network(
+    'https://yesno.wtf/assets/no/10-d5ddf3f82134e781c1175614c0d2bab2.gif',
+    width: size.width * 0.70,
+    height: 150,
+    fit: BoxFit.cover,
+    loadingBuilder: ( context, child, loadingProgress){ 						//<---1.1
+        if( loadingProgress == null ) return child;								//<---1.2
+        return Container(														//<---1.3
+          width: size.width * 0.70,												//<---1.4
+          height: 150,															//<---1.5
+          padding: const EdgeInsets.symmetric( horizontal: 10, vertical: 5 ),	//<---1.6
+          child: const Text( "Checo Perez esta enviando un mensaje" ),			//<---1.7
+        );
+    },
+) );
+```
+
+RESULTADO:
+
+<img src=img/img_16.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+
+
+73. TEXT FORM FIELD
+
+    Para este capitulo crearemos una caja de texto, el cual nos permitira introducir texto. Para ello crearemos un nuevo directorio en nuestra carpeta widget, con lo cual tendremos el directorio con la siguiente direccion lib/presentation/widget/shared, donde crearemos un widget, con el nombre de message_field_box.dart
+
+    Entonces definimos el contenido de nuestra clase.
+
+    ```dart
+    import 'package:flutter/material.dart';
+    
+    class MessegeFielBox extends StatelessWidget {
+      const MessegeFielBox({super.key});
+    
+      @override
+      Widget build(BuildContext context) {
+        return  const Text( 'hola mundo' );
+      }
+    }
+    ```
+
+    y la agregamos a nuestra chat_screen.dart. 
+
+    ```dart
+    class _ChatView extends StatelessWidget {
+      @override
+      Widget build(BuildContext context) {
+        return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric( horizontal: 10 ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: 100,
+                      itemBuilder: ( context, index ){
+                        return ( index % 2 == 0 )
+                          ? const HisMessageBubble()
+                          : const MyMessageBubble();
+                      }
+                    ),
+                  ),
+                  const MessegeFielBox(),		//<---NEW ADD
+                ],
+    ...
+    ```
+
+    Con esto tendremos como resultado un texto de hola mundo en la parte inferior, para diferenciarlos de la configuracion anterior, tenemos que nuestro hola mundo esta en minusculas contrario a las mayusculas anteriores.
+
+    RESULTADO:
+
+    <img src=img/img_17.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+ya manana le sigo ;)
+
+
+
 ---
 
 
