@@ -713,7 +713,193 @@ RESULTADO:
 
     <img src=img/img_17.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
 
-ya manana le sigo ;)
+Para continuar con nuestro codigo, cambiaremos el texto que esta en la parte inferior por un TextFormField.
+
+Ahora definimos algunos estilos para nuestra caja de texto, primero definiremos un widget de tipo decoration, donde estableceremos un llenado del background de nuestro TextFormField, esto del color o apariencia de nuestro tema establecido.
+
+```dart
+...
+	return TextFormField(
+        decoration: const InputDecoration(
+          filled: true,
+        ),
+    );
+...
+```
+
+Agregamos un boton de enviar, con el icono send_outlined, con una funcion onPressed
+
+```dart
+...
+          decoration: InputDecoration(
+          filled: true,
+          suffixIcon: IconButton(						//<---
+              onPressed: (){},							//<---
+              icon: const Icon( Icons.send_outlined )	//<---
+          )
+        ),
+...
+```
+
+RESULTADO:
+
+<img src=img/img_18.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+Continuando con nuestro codigo, definimos el borde de nuestra caja de texto, para ello definimos el color de nuestro borde, donde crearemos una variable de tipo final para definir el color a partir de nuestros temas, ademas de que definiremos el tamano del borde.
+
+```dart 
+...
+    final colors = Theme.of(context).colorScheme;				//<---
+    
+    return TextFormField(
+        decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(					//<---
+            borderSide: BorderSide( color: colors.primary ),	//<---
+            borderRadius: BorderRadius.circular( 20 )			//<---
+          ),	
+          filled: true,
+          suffixIcon: IconButton(
+              onPressed: (){},
+              icon: const Icon( Icons.send_outlined )
+          )
+        ),
+    );
+...
+```
+
+RESULTADO:
+
+<img src=img/img_19.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+Ahora tenemos el problema de que cuando tratamos de escribir un texto en nuestra caja de texto, se pierden las propiedades de redondeo que habiamos establecido. Para solucionar esto creamos un widget que nos haga el border de nuestra caja de texto y despues definimos el widget en nuestro enabledBorder y focusedBorder, como tenemos a continuacion.
+
+```dart
+...
+    final outlineInputBorer = UnderlineInputBorder(					//<---
+        borderSide: const BorderSide( color: Colors.transparent ),	//<---
+        borderRadius: BorderRadius.circular( 40 )					//<---
+    );
+    
+    return TextFormField(
+        decoration: InputDecoration(
+          enabledBorder: outlineInputBorer,							//<---
+          focusedBorder: outlineInputBorer,							//<---
+          filled: true,
+...
+```
+
+Con lo anterior ya quedo solucionado nuestro problema, a continuacion, para tener nuestro codigo mas simplificado definiremos un widget que contendra toda nuestra decoracion, y la llamammos en nuestro TextFormField	
+
+```dart
+...
+	final inputDecoration = InputDecoration(			//<---
+        enabledBorder: outlineInputBorer,
+        focusedBorder: outlineInputBorer,
+        filled: true,
+        suffixIcon: IconButton(
+            onPressed: (){},
+            icon: const Icon( Icons.send_outlined )
+        )
+    );
+
+    return TextFormField(
+        decoration: inputDecoration						//<---
+    );
+...
+```
+
+Ahora definiremos un onFieldSubmited, el cual nos permitira ver los valores que se estan introduciendo en nuestra caja de texo, ademas de que para ello los imprimiremos por consola.
+
+```dart
+...
+			suffixIcon: IconButton(
+            onPressed: (){
+              print( 'Valor de la caja de texto? ' );	//<---
+            },
+            icon: const Icon( Icons.send_outlined )
+        )
+    );
+
+    return TextFormField(
+        decoration: inputDecoration,
+        onFieldSubmitted: ( value ){					//<---	
+          print( 'Submit Value $value' );				//<---
+        },
+	    onChanged: ( value ){							//<---
+          print( 'Changed: $value' );					//<---
+        },	
+...
+```
+
+donde tenemos los siguientes resultados mostrados en consola.
+
+```bash
+I/flutter (13416): Changed: Tacos
+I/flutter (13416): Valor de la caja de texto? 
+```
+
+RESULTADO: 
+
+<img src=img/img_20.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+
+
+74. COMPORTAMIENTO DEL FORMFIELD
+
+Para continuar con nuestra aplicacion, donde pondremos un mensaje que estara en nuestra caja de texto antes de que inciemos a escribir algo, esto lo haremos en el imputDecoration. 
+
+Ahora haremos que cuando demos un enter a nuestra caja de texto este nos borre el texto introducido. Esto lo haremos mediante un TextEditingController y agregandolo en nuestro onSubmited y borramos el onChanged.
+
+```dart
+...
+	final textController = TextEditingController();					//<---
+
+    final outlineInputBorder = UnderlineInputBorder(
+        borderSide: const BorderSide( color: Colors.transparent ),
+        borderRadius: BorderRadius.circular( 40 )
+    );
+
+    final inputDecoration = InputDecoration(
+        hintText: 'End your message with a "?"',					//<---
+        enabledBorder: outlineInputBorder,
+        focusedBorder: outlineInputBorder,
+        filled: true,
+        suffixIcon: IconButton(
+            icon: const Icon( Icons.send_outlined ),
+            onPressed: (){
+              print( 'Valor de la caja de texto? ' );
+            },
+        )
+    );
+
+    return TextFormField(
+        controller: textController,									//<---
+        decoration: inputDecoration,
+        onFieldSubmitted: ( value ){
+          print( 'Submit Value $value' );
+          textController.clear();									//<---
+        },
+```
+
+RESULTADO:
+
+<img src=img/img_21.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
