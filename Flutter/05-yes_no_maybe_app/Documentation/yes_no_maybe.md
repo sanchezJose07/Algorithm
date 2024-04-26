@@ -885,48 +885,82 @@ RESULTADO:
 
 <img src=img/img_21.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
 
- 
+ Para tomar el valor de nuestra caja de texto, crearemos una variable de tipo final para que nuestro valor se guarde en esta variabl y ademas imprimirla en consola, cabe aclarar que para que cuando presionemos el boton de enviar, teenemos que limipiar la caja de texto.
 
+```dart
+...
+		filled: true,
+        suffixIcon: IconButton(
+            icon: const Icon( Icons.send_outlined ),
+            onPressed: (){
+              final textValue = textController.value.text;	//<---
+              print( 'BOTON: $textValue' );					//<---
+              textController.clear();						//<---
+            },
+        )
+    );
+...
+```
 
+```bash
+I/flutter (15086): BOTON: HOY ES JUEVES
+```
 
+Ahora tenemos el siguiente problema, el cual es que cuando damos enter con el boton del teclado del telefono nos desaparece el teclado, lo cual no es normal en una aplicacion de mensajeria. Para esto creremos un widget de tipo focusNode, el cual nos permite que despues de que que se limpia el texto siempre vamos a mantener el foco ahi.
 
+```dart
+...
+	final textController = TextEditingController();
+    final focusNode = FocusNode();									//<---
 
+    final outlineInputBorder = UnderlineInputBorder(
+        borderSide: const BorderSide( color: Colors.transparent ),
+        borderRadius: BorderRadius.circular( 40 )
+    );
 
+    final inputDecoration = InputDecoration(
+        hintText: 'End your message with a "?"',
+        enabledBorder: outlineInputBorder,
+        focusedBorder: outlineInputBorder,
+        filled: true,
+        suffixIcon: IconButton(
+            icon: const Icon( Icons.send_outlined ),
+            onPressed: (){
+              final textValue = textController.value.text;
+              print( 'BOTON: $textValue' );
+              textController.clear();
+            },
+        )
+    );
 
+    return TextFormField(
+        focusNode: focusNode,										//<---
+        controller: textController,
+        decoration: inputDecoration,
+        onFieldSubmitted: ( value ){
+          print( 'Submit Value $value' );
+          textController.clear();
+          focusNode.requestFocus();									//<---
+        },
+...
+```
 
+Finalmente, definimos que se oculte el teclado cuando tocamos fuera de la caja de texto  esto con unfocus
 
+```DART
+...
+   	 return TextFormField(
+        onTapOutside: ( event ){	//<---
+          focusNode.unfocus();		//<---
+        },
+        focusNode: focusNode,
+...
+```
 
+RESULTADO:
 
-
-
-
-
-
+<img src=img/img_22.png alt="yesNoMaybeApp" style="width:260px;height:507px;">
 
 ---
 
-
-
-## Apéndice
-
-**WIDGET (FLUTTER)**
-
-- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----
+​	
