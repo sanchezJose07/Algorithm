@@ -30,9 +30,35 @@ Al finalizar la sección tendremos una buena base de como alojar el estado fuera
 
 ---
 
-## I. Creando el primer Widget
+## 80. Entidad - Message
 
-Para todo programa de flutter, iniciaremos con la función principal main(), donde correremos nuestro widget.
+Como primer paso de nuestra leccion es crear un directorio en la carpeta lib de nuestro proyecto, esto siguiendo los principios de la arquitectura limpia. En nuestro directorio creado crearemos la carpeta entities. En este directorio crearemos el archivos message.dart, donde cabe mencionar que estos directorios estaran programados propiamente con dart, por lo que no agregaremos widgets.
+
+ Entonces crearemos 3 variables de las cuales 2 seran requeridas, lo cual se especifica en el constructor como se muestra en el codigo siguiente.
+
+```dart
+enum FromWho { mine, his }
+
+class Message{
+  final String text;
+  final String? imageUrl;
+  final FromWho fromWho;
+
+  Message({
+    required this.text,
+    this.imageUrl,
+    required this.fromWho
+  });
+}
+```
+
+
+
+## 81. Provider - Gestor de estados
+
+ 
+
+
 
 ```dart
 void main(){
